@@ -1,0 +1,77 @@
+// Выбор между картинкой или текстом с описанием в логотипе файл theme-options.php
+
+<?php
+if ( ! defined( 'ABSPATH' ) ) { 
+    exit; 
+} 
+use Carbon_Fields\Container;
+use Carbon_Fields\Field;
+
+Container::make( 'theme_options', 'Настройки темы' )
+		 ->set_icon( 'dashicons-carrot' )
+		 ->add_tab( 'Шапка', array(
+			  Field::make( 'select', 'vp_header_logo_select', 'Будет использоваться логотип?' )->set_width( 100 )
+				->add_options(array(
+					'yes' => 'Да',
+					'no' => 'Нет',
+			  	)),
+			  Field::make( 'image', 'vp_header_logo', 'Логотип' )->set_width( 100 )
+			  ->set_conditional_logic(array(
+					  'relation' => 'AND',
+					  array(
+						  'field' => 'vp_header_logo_select',
+						  'value' => 'yes',
+						  'compare' => '=',
+					  )
+				  )),
+
+			  Field::make( 'text', 'vp_header_logo_text', 'Текст Логотипа' )->set_width( 50 )
+			  ->set_conditional_logic(array(
+					  'relation' => 'AND',
+					  array(
+						  'field' => 'vp_header_logo_select',
+						  'value' => 'no',
+						  'compare' => '=',
+					  )
+				  )),
+			  Field::make( 'text', 'vp_header_logo_descr', 'Описание Логотипа' )->set_width( 50 )
+			  ->set_conditional_logic(array(
+					  'relation' => 'AND',
+					  array(
+						  'field' => 'vp_header_logo_select',
+						  'value' => 'no',
+						  'compare' => '=',
+					  )
+				  )),
+          
+          
+          
+// Вывод вышестоящего в header.php
+
+<div class="header-logo">
+      <?php $logo_id = carbon_get_theme_option('vp_header_logo'); 
+      $logo = $logo_id ? wp_get_attachment_image_src($logo_id) : ''; 
+
+      ?>
+
+      <?php if (is_front_page() || is_home()) : 
+        if ($logo_id) : ?>
+
+        <a href="<?php echo home_url('/');?>" class="logo-text">
+          <img src="<?php echo $logo[0];?>" width="<?php echo $logo[1];?>" height="<?php echo $logo[2];?>" alt="">
+        </a>
+
+        <?php else:?>
+          <a href="<?php echo home_url('/');?>" class="logo-text">
+            <?php echo carbon_get_theme_option('vp_header_logo_text'); ?>
+          </a>
+          <span>
+            <?php echo carbon_get_theme_option('vp_header_logo_descr'); ?>
+          </span>
+        <?php endif;?>
+        <?php else:?>
+          <a href="<?php echo home_url('/');?>" class="logo-text">
+            <img src="<?php echo $logo[0];?>" width="<?php echo $logo[1];?>" height="<?php echo $logo[2];?>" alt="">
+          </a>
+        <?php endif;?>
+    </div>
