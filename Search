@@ -1,0 +1,7 @@
+<div class="top-search-wrap">
+  <form action="<?php esc_url(home_url('/')); ?>">
+    <input type="text" value="<?php get_search_query();?>" name="s" placeholder="поиск..." >
+    <input type="submit" value="Найти">
+  </form>
+
+</div>
